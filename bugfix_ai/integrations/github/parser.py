@@ -83,7 +83,6 @@ def parse_alert(alert: dict[str, Any]) -> dict[str, Any]:
     rule = alert.get("rule") or {}
     instance = alert.get("most_recent_instance") or {}
     location = instance.get("location") or {}
-    tool = alert.get("tool") or {}
 
     severity_raw = (
         rule.get("security_severity_level")

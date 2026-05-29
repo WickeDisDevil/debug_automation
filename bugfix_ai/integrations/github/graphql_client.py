@@ -196,7 +196,7 @@ def _node_to_rest_shape(node: dict[str, Any]) -> dict[str, Any]:
         "closed_at": node.get("closedAt"),
         "user": {"login": author.get("login") or ""},
         "assignees": [{"login": a.get("login") or ""} for a in assignees],
-        "labels": [{"name": l.get("name") or ""} for l in labels],
+        "labels": [{"name": lbl.get("name") or ""} for lbl in labels],
         "repository": {"full_name": repo.get("nameWithOwner") or ""},
     }
 
