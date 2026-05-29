@@ -1,0 +1,69 @@
+# Terminal command allowlist for autonomous mode.
+# Only commands whose binary appears here may be executed without a manual override.
+# Each binary entry can constrain allowed subcommands or argument patterns.
+#
+# Edit cautiously. Anything not listed here is REJECTED — even if a developer
+# previously approved a fix that used it. This is the last line of defense
+# against LLM-adapted commands going somewhere they shouldn't.
+
+binaries:
+  # ── Read-only inspection ────────────────────────────────────────────────────
+  - name: ls
+    reversible: true
+  - name: cat
+    reversible: true
+  - name: tail
+    reversible: true
+  - name: head
+    reversible: true
+  - name: grep
+    reversible: true
+  - name: ps
+    reversible: true
+  - name: df
+    reversible: true
+  - name: du
+    reversible: true
+  - name: free
+    reversible: true
+  - name: uname
+    reversible: true
+
+  # ── Service / cluster ops (reversible) ──────────────────────────────────────
+  - name: systemctl
+    allowed_subcommands: [status, restart, reload]
+    reversible: true     # restart/reload are reversible; stop is not
+  - name: kubectl
+    allowed_subcommands: [get, describe, logs, rollout]
+    reversible: true
+    deny_args: ["delete", "exec", "--force"]
+  - name: docker
+    allowed_subcommands: [ps, logs, restart, inspect]
+    reversible: true
+    deny_args: ["rm", "rmi", "system prune"]
+
+  # ── Git (mostly reversible, but require care) ───────────────────────────────
+  - name: git
+    allowed_subcommands: [status, log, diff, show, fetch, pull]
+    reversible: true
+
+# ── Hard deny list — never executed regardless of binary entry ───────────────
+# These tokens cause immediate rejection if present anywhere in the command.
+deny_tokens:
+  - "rm -rf"
+  - "mkfs"
+  - "dd if="
+  - "> /dev/sd"
+  - ":(){"        # fork bomb
+  - "shutdown"
+  - "reboot"
+  - "poweroff"
+  - "chmod -R 777"
+  - "chown -R"
+  - "DROP TABLE"
+  - "DROP DATABASE"
+  - "TRUNCATE"
+  - "curl | sh"
+  - "wget | sh"
+  - "| bash"
+  - "eval $("

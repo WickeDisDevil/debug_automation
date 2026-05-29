@@ -1,0 +1,76 @@
+# ── Python ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+.eggs/
+build/
+dist/
+.installed.cfg
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ── Virtual environments ────────────────────────────────────────────────────
+.venv/
+venv/
+ENV/
+env/
+**/.venv/
+**/venv/
+
+# ── Secrets / local config (NEVER commit) ───────────────────────────────────
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+secrets/
+credentials.json
+
+# ── Databases / local stores ────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+checkpoints.db
+qdrant_storage/
+data/
+
+# ── Project outputs ─────────────────────────────────────────────────────────
+out/
+*.xlsx
+!docs/*.xlsx
+
+# ── Observability artifacts ─────────────────────────────────────────────────
+mlruns/
+.mlflow/
+*.log
+logs/
+
+# ── Test / lint caches ──────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+
+# ── IDEs / editors ──────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── OS junk ─────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ── Jupyter ─────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/

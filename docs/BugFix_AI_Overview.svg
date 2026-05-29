@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="phase1Grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="phase2Grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#374151"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <linearGradient id="excelGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#16a34a"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+    <linearGradient id="ghGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="ruleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0891b2"/>
+      <stop offset="100%" stop-color="#0e7490"/>
+    </linearGradient>
+    <linearGradient id="aiGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9333ea"/>
+      <stop offset="100%" stop-color="#7e22ce"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#cbd5e1"/>
+    </marker>
+    <marker id="arrowDim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="900" fill="url(#bgGrad)"/>
+
+  <!-- Title -->
+  <text x="700" y="55" text-anchor="middle" fill="#f8fafc" font-size="34" font-weight="700">BugFix AI &#8212; Project Overview</text>
+  <text x="700" y="86" text-anchor="middle" fill="#94a3b8" font-size="17">From open GitHub Issues to a categorized Excel report &#8212; with a Phase-2 fix-mode assistant on the same pipeline</text>
+
+  <!-- ===================== PHASE 1 PANEL ===================== -->
+  <rect x="40" y="120" width="1320" height="450" rx="14" fill="url(#phase1Grad)" opacity="0.18" stroke="#3b82f6" stroke-width="2"/>
+  <text x="65" y="155" fill="#bfdbfe" font-size="20" font-weight="700">PHASE 1 &#8212; Categorization &amp; Excel Showcase</text>
+  <text x="65" y="178" fill="#dbeafe" font-size="13" opacity="0.85">Ingest open issues &#8594; classify by /driver path (LLM fallback) &#8594; multi-sheet Excel workbook</text>
+
+  <!-- Step 0: Inputs -->
+  <g filter="url(#shadow)">
+    <rect x="70" y="210" width="220" height="140" rx="10" fill="url(#ghGrad)" stroke="#94a3b8" stroke-width="1"/>
+  </g>
+  <text x="180" y="238" text-anchor="middle" fill="#f1f5f9" font-size="15" font-weight="700">Step 0 &#8212; Inputs</text>
+  <text x="180" y="266" text-anchor="middle" fill="#e2e8f0" font-size="12">GitHub Issues (GraphQL)</text>
+  <text x="180" y="285" text-anchor="middle" fill="#cbd5e1" font-size="11">Fine-Grained PAT</text>
+  <text x="180" y="302" text-anchor="middle" fill="#cbd5e1" font-size="11">Issues:read &#183; Metadata:read</text>
+  <text x="180" y="324" text-anchor="middle" fill="#e2e8f0" font-size="12">+ Manual ticket POST</text>
+
+  <!-- Step 1: Intake -->
+  <g filter="url(#shadow)">
+    <rect x="320" y="210" width="200" height="140" rx="10" fill="#1e293b" stroke="#64748b" stroke-width="1"/>
+  </g>
+  <text x="420" y="238" text-anchor="middle" fill="#f1f5f9" font-size="15" font-weight="700">Step 1 &#8212; Parse</text>
+  <text x="420" y="266" text-anchor="middle" fill="#e2e8f0" font-size="12">issues_parser.py</text>
+  <text x="420" y="288" text-anchor="middle" fill="#94a3b8" font-size="11" font-style="italic">No cleaning needed</text>
+  <text x="420" y="304" text-anchor="middle" fill="#94a3b8" font-size="11" font-style="italic">(GitHub JSON is structured)</text>
+  <text x="420" y="328" text-anchor="middle" fill="#e2e8f0" font-size="12">&#8594; IssueRecord</text>
+
+  <!-- Step 2: Classification (composite) -->
+  <g filter="url(#shadow)">
+    <rect x="550" y="200" width="320" height="190" rx="10" fill="#0f172a" stroke="#3b82f6" stroke-width="2"/>
+  </g>
+  <text x="710" y="225" text-anchor="middle" fill="#f1f5f9" font-size="15" font-weight="700">Step 2 &#8212; Classify</text>
+
+  <!-- Rule-based -->
+  <rect x="565" y="240" width="135" height="100" rx="8" fill="url(#ruleGrad)"/>
+  <text x="632" y="264" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">URL extractor</text>
+  <text x="632" y="284" text-anchor="middle" fill="#e0f2fe" font-size="10">Path after /driver/</text>
+  <text x="632" y="300" text-anchor="middle" fill="#e0f2fe" font-size="10">e.g. audio/codec/foo.c</text>
+  <text x="632" y="320" text-anchor="middle" fill="#e0f2fe" font-size="10" font-style="italic">deterministic, conf=1.0</text>
+
+  <!-- AI -->
+  <rect x="715" y="240" width="140" height="140" rx="8" fill="url(#aiGrad)"/>
+  <text x="785" y="264" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">GPT-oss-20B</text>
+  <text x="785" y="284" text-anchor="middle" fill="#f3e8ff" font-size="10">Self-hosted fallback</text>
+  <text x="785" y="300" text-anchor="middle" fill="#f3e8ff" font-size="10">JSON-mode + Pydantic</text>
+  <text x="785" y="316" text-anchor="middle" fill="#f3e8ff" font-size="10" font-style="italic">&lt;area&gt;:&lt;sub-area&gt;</text>
+  <text x="785" y="340" text-anchor="middle" fill="#fde68a" font-size="9" font-style="italic">* swap in a different</text>
+  <text x="785" y="352" text-anchor="middle" fill="#fde68a" font-size="9" font-style="italic">project-based model if</text>
+  <text x="785" y="364" text-anchor="middle" fill="#fde68a" font-size="9" font-style="italic">provided, for better results</text>
+
+  <!-- Tiny arrow inside step 2 -->
+  <line x1="700" y1="290" x2="715" y2="290" stroke="#cbd5e1" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="632" y="358" text-anchor="middle" fill="#94a3b8" font-size="10">URL miss &#8594;</text>
+
+  <!-- Step 3: Excel -->
+  <g filter="url(#shadow)">
+    <rect x="900" y="200" width="430" height="170" rx="10" fill="url(#excelGrad)"/>
+  </g>
+  <text x="1115" y="228" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Step 3 &#8212; Excel Report  (showcase deliverable)</text>
+  <text x="1115" y="252" text-anchor="middle" fill="#dcfce7" font-size="12">issues_categorized.xlsx</text>
+
+  <!-- Sheet tabs visualization -->
+  <rect x="920" y="270" width="80" height="80" rx="4" fill="#fff" stroke="#15803d" stroke-width="1"/>
+  <text x="960" y="288" text-anchor="middle" fill="#15803d" font-size="10" font-weight="700">Summary</text>
+  <line x1="928" y1="298" x2="992" y2="298" stroke="#94a3b8" stroke-width="0.7"/>
+  <line x1="928" y1="308" x2="992" y2="308" stroke="#94a3b8" stroke-width="0.7"/>
+  <line x1="928" y1="318" x2="992" y2="318" stroke="#94a3b8" stroke-width="0.7"/>
+  <line x1="928" y1="328" x2="992" y2="328" stroke="#94a3b8" stroke-width="0.7"/>
+  <line x1="928" y1="338" x2="992" y2="338" stroke="#94a3b8" stroke-width="0.7"/>
+
+  <rect x="1010" y="270" width="80" height="80" rx="4" fill="#fff" stroke="#15803d" stroke-width="1"/>
+  <text x="1050" y="288" text-anchor="middle" fill="#15803d" font-size="9" font-weight="700">audio/codec</text>
+  <line x1="1018" y1="298" x2="1082" y2="298" stroke="#94a3b8" stroke-width="0.7"/>
+  <line x1="1018" y1="308" x2="1082" y2="308" stroke="#94a3b8" stroke-width="0.7"/>
+  <line x1="1018" y1="318" x2="1082" y2="318" stroke="#94a3b8" stroke-width="0.7"/>
+  <line x1="1018" y1="328" x2="1082" y2="328" stroke="#94a3b8" stroke-width="0.7"/>
+
+  <rect x="1100" y="270" width="80" height="80" rx="4" fill="#fff" stroke="#15803d" stroke-width="1"/>
+  <text x="1140" y="288" text-anchor="middle" fill="#15803d" font-size="9" font-weight="700">display/dp</text>
+  <line x1="1108" y1="298" x2="1172" y2="298" stroke="#94a3b8" stroke-width="0.7"/>
+  <line x1="1108" y1="308" x2="1172" y2="308" stroke="#94a3b8" stroke-width="0.7"/>
+  <line x1="1108" y1="318" x2="1172" y2="318" stroke="#94a3b8" stroke-width="0.7"/>
+
+  <rect x="1190" y="270" width="80" height="80" rx="4" fill="#fff" stroke="#15803d" stroke-width="1"/>
+  <text x="1230" y="288" text-anchor="middle" fill="#15803d" font-size="9" font-weight="700">kernel/mem</text>
+  <line x1="1198" y1="298" x2="1262" y2="298" stroke="#94a3b8" stroke-width="0.7"/>
+  <line x1="1198" y1="308" x2="1262" y2="308" stroke="#94a3b8" stroke-width="0.7"/>
+
+  <text x="1300" y="316" text-anchor="middle" fill="#fff" font-size="20" font-weight="700">&#8230;</text>
+  <text x="1115" y="365" text-anchor="middle" fill="#dcfce7" font-size="11">Issue ID  &#183;  Title  &#183;  Category  &#183;  Priority  &#183;  Status</text>
+
+  <!-- Phase 1 arrows -->
+  <line x1="290" y1="280" x2="320" y2="280" stroke="#cbd5e1" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="520" y1="280" x2="550" y2="280" stroke="#cbd5e1" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="870" y1="280" x2="900" y2="280" stroke="#cbd5e1" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Phase 1 trigger row -->
+  <rect x="70" y="395" width="1260" height="155" rx="10" fill="#0b1220" stroke="#1e40af" stroke-width="1" opacity="0.85"/>
+  <text x="700" y="423" text-anchor="middle" fill="#bfdbfe" font-size="14" font-weight="700">Three triggers, one orchestrator: run_categorization()</text>
+
+  <g>
+    <rect x="100" y="445" width="370" height="90" rx="8" fill="#1e293b" stroke="#64748b"/>
+    <text x="285" y="470" text-anchor="middle" fill="#f1f5f9" font-size="13" font-weight="700">HTTP (on-demand)</text>
+    <text x="285" y="492" text-anchor="middle" fill="#94a3b8" font-size="11">POST /issues/categorize/run</text>
+    <text x="285" y="510" text-anchor="middle" fill="#94a3b8" font-size="11">POST /issues/categorize/manual</text>
+    <text x="285" y="525" text-anchor="middle" fill="#94a3b8" font-size="11">GET  /issues/report.xlsx</text>
+  </g>
+  <g>
+    <rect x="515" y="445" width="370" height="90" rx="8" fill="#1e293b" stroke="#64748b"/>
+    <text x="700" y="470" text-anchor="middle" fill="#f1f5f9" font-size="13" font-weight="700">CLI / GitHub Actions</text>
+    <text x="700" y="492" text-anchor="middle" fill="#94a3b8" font-size="11">python -m scripts.categorize_issues</text>
+    <text x="700" y="510" text-anchor="middle" fill="#94a3b8" font-size="11">--max-issues  --force-llm  --from-json</text>
+    <text x="700" y="525" text-anchor="middle" fill="#94a3b8" font-size="11">recommended for production daily run</text>
+  </g>
+  <g>
+    <rect x="930" y="445" width="370" height="90" rx="8" fill="#1e293b" stroke="#64748b"/>
+    <text x="1115" y="470" text-anchor="middle" fill="#f1f5f9" font-size="13" font-weight="700">In-process daily scheduler</text>
+    <text x="1115" y="492" text-anchor="middle" fill="#94a3b8" font-size="11">asyncio loop &#8226; configurable H:M UTC</text>
+    <text x="1115" y="510" text-anchor="middle" fill="#94a3b8" font-size="11">for laptop / staging demos</text>
+    <text x="1115" y="525" text-anchor="middle" fill="#94a3b8" font-size="11">disabled in production</text>
+  </g>
+
+  <!-- ===================== PHASE 2 PANEL (planned) ===================== -->
+  <rect x="40" y="595" width="1320" height="265" rx="14" fill="url(#phase2Grad)" opacity="0.55" stroke="#475569" stroke-width="2" stroke-dasharray="6,4"/>
+  <text x="65" y="630" fill="#e2e8f0" font-size="20" font-weight="700">PHASE 2 &#8212; Developer-facing fix-mode lanes  (first draft)</text>
+  <text x="65" y="652" fill="#cbd5e1" font-size="13" opacity="0.85">Engineer picks a category from the Excel report &#8594; assistant routes the fix into one of three lanes</text>
+
+  <!-- Capture -->
+  <g filter="url(#shadow)">
+    <rect x="70" y="680" width="400" height="160" rx="10" fill="#1e293b" stroke="#a78bfa" stroke-width="1.5"/>
+  </g>
+  <text x="270" y="710" text-anchor="middle" fill="#ddd6fe" font-size="15" font-weight="700">Lane A &#8212; Capture</text>
+  <text x="270" y="734" text-anchor="middle" fill="#e2e8f0" font-size="12">"We've never seen this before"</text>
+  <text x="270" y="760" text-anchor="middle" fill="#cbd5e1" font-size="11">Output: flags ticket as "New issue"</text>
+  <text x="270" y="778" text-anchor="middle" fill="#cbd5e1" font-size="11">Engineer fixes &#8212; system observes silently.</text>
+  <text x="270" y="804" text-anchor="middle" fill="#94a3b8" font-size="10" font-style="italic">Records steps + tools in background &#8594;</text>
+  <text x="270" y="820" text-anchor="middle" fill="#94a3b8" font-size="10" font-style="italic">memory feeds Lane B / Lane C next time.</text>
+
+  <!-- Assist -->
+  <g filter="url(#shadow)">
+    <rect x="500" y="680" width="400" height="160" rx="10" fill="#1e293b" stroke="#60a5fa" stroke-width="1.5"/>
+  </g>
+  <text x="700" y="710" text-anchor="middle" fill="#bfdbfe" font-size="15" font-weight="700">Lane B &#8212; Assist</text>
+  <text x="700" y="734" text-anchor="middle" fill="#e2e8f0" font-size="12">"We've seen something similar"</text>
+  <text x="700" y="760" text-anchor="middle" fill="#cbd5e1" font-size="11">Top-N prior fixes shown,</text>
+  <text x="700" y="778" text-anchor="middle" fill="#cbd5e1" font-size="11">ranked by relevance + recency.</text>
+  <text x="700" y="804" text-anchor="middle" fill="#94a3b8" font-size="10" font-style="italic">Engineer picks one or rejects all.</text>
+  <text x="700" y="820" text-anchor="middle" fill="#94a3b8" font-size="10" font-style="italic">Choice becomes preference data.</text>
+
+  <!-- Autonomous -->
+  <g filter="url(#shadow)">
+    <rect x="930" y="680" width="400" height="160" rx="10" fill="#1e293b" stroke="#34d399" stroke-width="1.5"/>
+  </g>
+  <text x="1130" y="710" text-anchor="middle" fill="#a7f3d0" font-size="15" font-weight="700">Lane C &#8212; Autonomous</text>
+  <text x="1130" y="734" text-anchor="middle" fill="#e2e8f0" font-size="12">"Mechanical fix &#8212; we know this one"</text>
+  <text x="1130" y="760" text-anchor="middle" fill="#cbd5e1" font-size="11">Loads saved fix plan,</text>
+  <text x="1130" y="778" text-anchor="middle" fill="#cbd5e1" font-size="11">asks for ONE approval, runs it.</text>
+  <text x="1130" y="804" text-anchor="middle" fill="#94a3b8" font-size="10" font-style="italic">Sandboxed: allowlist, dry-run,</text>
+  <text x="1130" y="820" text-anchor="middle" fill="#94a3b8" font-size="10" font-style="italic">timeouts, no shell metachars.</text>
+
+  <!-- Footer -->
+  <text x="700" y="888" text-anchor="middle" fill="#64748b" font-size="11">Self-hosted GPT-oss-20B  &#183;  fine-grained PAT  &#183;  read-only on GitHub  &#183;  no data leaves the perimeter</text>
+</svg>

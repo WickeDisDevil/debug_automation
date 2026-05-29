@@ -1,0 +1,127 @@
+# Issue categorization rules.
+#
+# Loaded by `bugfix_ai.categorization.rules`. Edit this file to teach the
+# rule layer about your team's labels, components, and priority conventions
+# WITHOUT touching code.
+#
+# Two-stage match:
+#   1. `categories` — the closed taxonomy. The first matching category wins.
+#      A category matches if ANY of its `label_keywords` appears as an issue
+#      label, OR ANY of its `title_keywords` is found (case-insensitive,
+#      word-boundary) in the issue title or first paragraph.
+#   2. `priority_labels` — direct label-to-priority lookup. The highest
+#      severity wins if multiple match.
+#
+# `components` is independent — it tags ownership and is appended to the
+# category as a sub-tag (e.g. "bug:auth-svc"). The rule layer never invents
+# components; the LLM stage is responsible for proposing one when no rule
+# matches.
+
+categories:
+  - name: bug
+    description: "Functional defect — something that used to work, doesn't."
+    label_keywords: [bug, defect, regression, broken, crash, hang]
+    title_keywords:
+      - regression
+      - "no longer works"
+      - "stopped working"
+      - "broken after"
+      - "exception thrown"
+      - traceback
+      - segfault
+      - "panic:"
+      - "stack trace"
+
+  - name: security
+    description: "Confidentiality / integrity / availability concern."
+    label_keywords: [security, vuln, vulnerability, cve, codeql, snyk]
+    title_keywords:
+      - vulnerability
+      - "security issue"
+      - cve-
+      - injection
+      - xss
+      - csrf
+      - rce
+      - "authentication bypass"
+      - "privilege escalation"
+
+  - name: performance
+    description: "Slow / high resource usage / scaling failure."
+    label_keywords: [performance, perf, slow, latency, memory-leak, scaling]
+    title_keywords:
+      - "slow"
+      - latency
+      - "high cpu"
+      - "memory leak"
+      - "out of memory"
+      - oom
+      - "p99"
+      - throughput
+
+  - name: build
+    description: "Build / CI / dependency issues."
+    label_keywords: [build, ci, dependencies, deps, infra, devops]
+    title_keywords:
+      - "build fails"
+      - "ci fails"
+      - "broken pipeline"
+      - "dependency conflict"
+      - "cannot install"
+      - "compile error"
+
+  - name: docs
+    description: "Documentation defect or gap."
+    label_keywords: [docs, documentation, readme, typo]
+    title_keywords:
+      - "missing docs"
+      - "incorrect docs"
+      - "typo in"
+      - "documentation"
+
+  - name: feature
+    description: "Net-new functionality request."
+    label_keywords: [feature, enhancement, feature-request, rfe]
+    title_keywords:
+      - "feature request"
+      - "would be nice"
+      - "support for"
+      - "add ability to"
+
+  - name: question
+    description: "Support / how-to question, not a code change."
+    label_keywords: [question, support, help-wanted, discussion]
+    title_keywords:
+      - "how do i"
+      - "how to"
+      - "is it possible"
+      - "what is the"
+
+# Priority — highest severity wins on multi-match.
+# Order in this list is significant: earlier = higher severity.
+priority_labels:
+  - level: critical
+    labels: [p0, sev0, severity-critical, critical, urgent, security-critical]
+  - level: high
+    labels: [p1, sev1, severity-high, high, important]
+  - level: medium
+    labels: [p2, sev2, severity-medium, medium, normal]
+  - level: low
+    labels: [p3, sev3, severity-low, low, minor, trivial, nice-to-have]
+
+# Components — owner mapping. Sub-tag appended to category.
+# `paths` are matched substring against any "Affected files" / file mention
+# in the issue body. `labels` are direct label matches.
+components:
+  - name: auth-svc
+    labels: [component:auth, area/auth, auth]
+    paths: ["services/auth/", "auth/"]
+  - name: drivers
+    labels: [component:drivers, area/drivers, drivers]
+    paths: ["drivers/", "kernel/"]
+  - name: api-gateway
+    labels: [component:api, area/api]
+    paths: ["api/", "gateway/"]
+  - name: ui
+    labels: [component:ui, area/ui, frontend]
+    paths: ["web/", "ui/", "frontend/"]
