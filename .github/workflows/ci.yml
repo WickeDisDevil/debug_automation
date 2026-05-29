@@ -35,6 +35,10 @@ jobs:
       CHECKPOINTER_TYPE: "sqlite"
       SQLITE_DB_PATH: ":memory:"
       CATEGORIZATION_SCHEDULED_ENABLED: "false"
+      # The package source lives at repo-root/bugfix_ai/. Its pyproject's
+      # packages.find is misconfigured for editable installs from this
+      # layout, so we make `import bugfix_ai` resolve via PYTHONPATH instead.
+      PYTHONPATH: ${{ github.workspace }}
 
     steps:
       - name: Checkout
@@ -54,9 +58,11 @@ jobs:
       - name: Install project requirements
         run: pip install -r bugfix_ai/requirements.txt
 
-      - name: Install project (editable) + dev tools
-        # pyproject.toml lives under bugfix_ai/, not at the repo root.
-        run: pip install -e ./bugfix_ai ruff pytest pytest-asyncio
+      - name: Install dev tools
+        # Skip editable install: bugfix_ai/pyproject.toml's packages.find
+        # is set up for a different layout. PYTHONPATH (set in env above)
+        # makes `import bugfix_ai` resolve from the repo root directly.
+        run: pip install ruff pytest pytest-asyncio
 
       - name: Ruff lint
         run: ruff check bugfix_ai tests scripts

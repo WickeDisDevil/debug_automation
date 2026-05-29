@@ -1,4 +1,4 @@
-"""Smoke tests for the Excel exporter's sheet-name sanitizer.
+r"""Smoke tests for the Excel exporter's sheet-name sanitizer.
 
 Excel enforces two hard rules on worksheet names:
   * length <= 31 characters
