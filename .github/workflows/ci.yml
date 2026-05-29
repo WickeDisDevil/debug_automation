@@ -84,7 +84,7 @@ jobs:
         # Only upload from the 3.12 leg — both legs report identical
         # numbers and uploading both just clutters the run page.
         if: matrix.python-version == '3.12'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-xml
           path: coverage.xml
