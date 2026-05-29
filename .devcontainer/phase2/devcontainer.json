@@ -1,0 +1,67 @@
+{
+  "name": "BugFix AI - Codespaces (Phase 2 full stack)",
+
+  // Docker Compose so the codespace gets Postgres + Qdrant + MLflow as
+  // sibling services on the same docker network. The `app` service is
+  // the one VS Code attaches to.
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "forwardPorts": [8000, 5432, 6333, 5000],
+  "portsAttributes": {
+    "8000": { "label": "BugFix AI API (FastAPI)", "onAutoForward": "notify" },
+    "5432": { "label": "Postgres",                "onAutoForward": "silent" },
+    "6333": { "label": "Qdrant (HTTP)",           "onAutoForward": "silent" },
+    "5000": { "label": "MLflow",                  "onAutoForward": "openBrowser" }
+  },
+
+  "postCreateCommand": "bash .devcontainer/phase2/postCreate.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "ms-toolsai.jupyter",
+        "redhat.vscode-yaml",
+        "tamasfe.even-better-toml",
+        "yzhang.markdown-all-in-one",
+        "eamodio.gitlens",
+        "humao.rest-client",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.terminal.activateEnvironment": false,
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": ["bugfix_ai", "tests"],
+        "editor.formatOnSave": true,
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        }
+      }
+    }
+  },
+
+  "remoteEnv": {
+    "PYTHONPATH": "${containerWorkspaceFolder}",
+    "PHASE": "2",
+    "CHECKPOINTER_TYPE": "postgres",
+    "POSTGRES_HOST": "postgres",
+    "POSTGRES_PORT": "5432",
+    "POSTGRES_USER": "bugfix",
+    "POSTGRES_PASSWORD": "bugfix",
+    "POSTGRES_DB": "bugfix",
+    "QDRANT_URL": "http://qdrant:6333",
+    "MLFLOW_TRACKING_URI": "http://mlflow:5000"
+  },
+
+  "remoteUser": "vscode"
+}

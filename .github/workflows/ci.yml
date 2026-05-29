@@ -1,0 +1,64 @@
+name: CI
+
+# Lint + test on every push and PR to main. Kept intentionally small —
+# the test suite is dependency-free (sqlite :memory: checkpointer, no
+# network, no LLM, no Postgres / Qdrant), so this job runs in <2 min
+# on a fresh runner.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-test:
+    name: Lint + tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    env:
+      # Same defaults conftest.py pins — set here too so any script
+      # imported at collection time also sees them.
+      PHASE: "1"
+      ENVIRONMENT: "test"
+      API_KEY: "test-key"
+      GITHUB_OWNER: "test-owner"
+      GITHUB_REPO: "test-repo"
+      CHECKPOINTER_TYPE: "sqlite"
+      SQLITE_DB_PATH: ":memory:"
+      CATEGORIZATION_SCHEDULED_ENABLED: "false"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install CPU-only Torch (saves ~2 GB vs the default CUDA wheel)
+        run: |
+          python -m pip install --upgrade pip
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
+
+      - name: Install project requirements
+        run: pip install -r bugfix_ai/requirements.txt
+
+      - name: Install project (editable) + dev tools
+        run: pip install -e . ruff pytest pytest-asyncio
+
+      - name: Ruff lint
+        run: ruff check bugfix_ai tests scripts
+
+      - name: Pytest
+        run: pytest -q

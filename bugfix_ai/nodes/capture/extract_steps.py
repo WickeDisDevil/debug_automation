@@ -117,7 +117,6 @@ def _trace_to_baseline(events: list[CaptureEvent]) -> list[FixStep]:
             _coalesce_files(pending_files, ev.get("files"))
             if plan:
                 last = dict(plan[-1])
-                last_files = list(last.get("expected_outcome", "").split("|") if False else [])
                 # Stash files into the description so we don't lose them.
                 desc = last.get("description") or ""
                 file_str = ", ".join(pending_files)

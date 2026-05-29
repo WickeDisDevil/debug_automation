@@ -182,5 +182,9 @@ def _next_link(link_header: str | None) -> str | None:
 
 async def aclose() -> None:
     """Call from shutdown to release the connection pool."""
-    if "_http" in dir() and _http.cache_info().currsize:  # type: ignore[attr-defined]
+    # `_http` is an lru_cache wrapper; check currsize directly to see if a
+    # client was ever instantiated. The previous `"_http" in dir()` check
+    # always returned False (dir() with no args inspects local scope), so
+    # the pool was never actually closed on shutdown.
+    if _http.cache_info().currsize:
         await _http().aclose()
