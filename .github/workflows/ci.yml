@@ -55,7 +55,8 @@ jobs:
         run: pip install -r bugfix_ai/requirements.txt
 
       - name: Install project (editable) + dev tools
-        run: pip install -e . ruff pytest pytest-asyncio
+        # pyproject.toml lives under bugfix_ai/, not at the repo root.
+        run: pip install -e ./bugfix_ai ruff pytest pytest-asyncio
 
       - name: Ruff lint
         run: ruff check bugfix_ai tests scripts
