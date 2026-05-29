@@ -38,7 +38,7 @@ detect-secrets>=1.5.0
 
 # ── Utilities ────────────────────────────────────────────────────────────────
 python-dotenv>=1.0.1
-pyyaml>=6.0.1
+pyyaml>=6.0.3
 openpyxl>=3.1.2  # optional: for Excel ingest fallback
 
 # ── Dev / test ───────────────────────────────────────────────────────────────
