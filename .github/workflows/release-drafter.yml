@@ -1,0 +1,32 @@
+name: Release drafter
+
+# Maintains a permanent DRAFT release on GitHub that auto-updates with
+# every merge to main. When you're ready to cut a release, just open
+# the draft, set the version tag, and click Publish. No manual
+# changelog writing.
+#
+# Pairs with `.github/release-drafter.yml` which defines:
+#   * Category sections (Features / Fixes / Maintenance / etc.)
+#   * Label → category mapping
+#   * Default version bumping rules
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    # 'edited' so re-labeling a PR re-categorizes its entry in the draft.
+    types: [opened, reopened, synchronize, edited, labeled, unlabeled]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  draft:
+    name: Update release draft
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run release-drafter
+        uses: release-drafter/release-drafter@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

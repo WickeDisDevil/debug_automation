@@ -62,10 +62,30 @@ jobs:
         # Skip editable install: bugfix_ai/pyproject.toml's packages.find
         # is set up for a different layout. PYTHONPATH (set in env above)
         # makes `import bugfix_ai` resolve from the repo root directly.
-        run: pip install ruff pytest pytest-asyncio
+        run: pip install ruff pytest pytest-asyncio pytest-cov
 
       - name: Ruff lint
         run: ruff check bugfix_ai tests scripts
 
-      - name: Pytest
-        run: pytest -q
+      - name: Pytest (with coverage)
+        # Coverage is exported as XML for tooling and as a terminal
+        # summary for at-a-glance reading in the Actions log.
+        # `-m "not integration"` keeps the hermetic gate hermetic —
+        # the integration slice has its own workflow with the Phase 2
+        # stack pre-provisioned.
+        run: >-
+          pytest -q
+          -m "not integration"
+          --cov=bugfix_ai
+          --cov-report=xml:coverage.xml
+          --cov-report=term
+
+      - name: Upload coverage artifact
+        # Only upload from the 3.12 leg — both legs report identical
+        # numbers and uploading both just clutters the run page.
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          retention-days: 30

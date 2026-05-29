@@ -1,0 +1,83 @@
+name: Scheduled categorization
+
+# Runs `scripts/categorize_issues.py` against the live repo and uploads the
+# generated Excel workbook as a workflow artifact. This is the "production"
+# replacement for the in-process daily scheduler that ships with Phase 1.
+# To switch over: set categorization_scheduled_enabled=false in the
+# deployed app's settings and enable the cron block below.
+#
+# Trigger model:
+#   * workflow_dispatch — always available so you can fire a one-off run
+#     from the Actions tab.
+#   * schedule (cron) — DISABLED by default. Uncomment when you have:
+#       - confirmed scripts/categorize_issues.py runs cleanly against
+#         the auto-provided GITHUB_TOKEN scope (read access is enough).
+#       - decided what to do with the LLM fallback path (either set
+#         OPENAI_API_KEY as a repo secret, or accept that genuinely
+#         ambiguous issues will fall back to a default category).
+#
+# Outputs:
+#   The workbook is uploaded as an artifact under the run; retained for
+#   30 days by GitHub's default.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "When true, skip the workbook write."
+        required: false
+        default: "false"
+  # schedule:
+  #   - cron: "0 9 * * *"   # 09:00 UTC daily — enable once secrets are set
+
+permissions:
+  contents: read
+  issues: read
+
+concurrency:
+  group: scheduled-categorize
+  cancel-in-progress: false
+
+jobs:
+  categorize:
+    name: Categorize issues and upload workbook
+    runs-on: ubuntu-latest
+    env:
+      PHASE: "1"
+      ENVIRONMENT: "production"
+      PYTHONPATH: ${{ github.workspace }}
+      GITHUB_TOKEN_FOR_API: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_OWNER: ${{ github.repository_owner }}
+      GITHUB_REPO: ${{ github.event.repository.name }}
+      CATEGORIZATION_SCHEDULED_ENABLED: "false"
+      CATEGORIZATION_DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install CPU-only Torch
+        run: |
+          python -m pip install --upgrade pip
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
+
+      - name: Install project requirements
+        run: pip install -r bugfix_ai/requirements.txt
+
+      - name: Run categorization
+        run: python -m scripts.categorize_issues
+
+      - name: Upload workbook artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: categorized-issues-${{ github.run_id }}
+          path: |
+            **/*.xlsx
+          if-no-files-found: warn
+          retention-days: 30

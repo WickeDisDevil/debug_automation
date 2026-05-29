@@ -17,3 +17,9 @@ include = ["bugfix_ai*"]
 asyncio_mode = "auto"
 testpaths = ["tests"]
 addopts = "-ra --strict-markers"
+markers = [
+  # Tests that need a live Postgres + Qdrant (provisioned by the
+  # `integration-tests.yml` workflow's `services:` block). Excluded
+  # from the default CI run via `-m "not integration"`.
+  "integration: requires the Phase 2 stack (Postgres + Qdrant)",
+]

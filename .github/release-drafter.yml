@@ -1,0 +1,51 @@
+# Config consumed by the release-drafter action (see workflow of the
+# same name). Each merged PR is sorted into one of the categories
+# below based on its labels; PRs with no matching label still appear
+# under a catch-all section.
+#
+# Version bumping:
+#   * `major` label   → bumps X.0.0
+#   * `minor`/`feat`  → bumps 0.X.0
+#   * everything else → bumps 0.0.X
+
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+
+categories:
+  - title: "Features"
+    labels:
+      - "feature"
+      - "feat"
+      - "enhancement"
+  - title: "Bug fixes"
+    labels:
+      - "fix"
+      - "bug"
+  - title: "Maintenance"
+    labels:
+      - "chore"
+      - "refactor"
+      - "ci"
+      - "deps"
+  - title: "Documentation"
+    labels:
+      - "docs"
+
+change-template: "- $TITLE (#$NUMBER) @$AUTHOR"
+change-title-escapes: '\<*_&'
+
+version-resolver:
+  major:
+    labels: ["major", "breaking"]
+  minor:
+    labels: ["minor", "feature", "feat"]
+  patch:
+    labels: ["patch", "fix", "bug", "chore"]
+  default: patch
+
+template: |
+  ## What's changed
+
+  $CHANGES
+
+  **Full changelog:** https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION

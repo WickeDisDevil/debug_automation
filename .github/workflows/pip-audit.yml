@@ -1,0 +1,45 @@
+name: Dependency vulnerability audit
+
+# Runs `pip-audit` against the project's pinned requirements once a week
+# and on demand. Fails the run on any vulnerability so the Actions tab
+# turns red and you see it without having to subscribe to a digest.
+#
+# Why a separate workflow (not a step in CI):
+#   The vuln database changes independently of your code — a workflow
+#   that ran weekly even with no code changes is what catches a
+#   freshly-disclosed CVE in something you already shipped.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Mondays at 06:00 UTC — early enough to land before the week's
+    # first PR review window in most timezones.
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: pip-audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pip-audit
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-audit
+
+      - name: Audit bugfix_ai/requirements.txt
+        # `--strict` fails the run on any vulnerability (the default is
+        # to exit 0 and only print). `--desc` includes a one-line
+        # explanation per finding in the log.
+        run: pip-audit --strict --desc -r bugfix_ai/requirements.txt

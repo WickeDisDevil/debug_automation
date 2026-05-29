@@ -1,0 +1,44 @@
+# Dependabot config — opens upgrade PRs automatically. No workflow
+# file needed; GitHub reads this directly.
+#
+# Scope:
+#   * Python deps in bugfix_ai/requirements.txt — weekly.
+#   * GitHub Actions versions in .github/workflows/*.yml — weekly.
+#     (Covers the Node-20 deprecation chatter you saw recently — when
+#     actions/checkout@v5 lands, Dependabot will open the upgrade PR.)
+#
+# We deliberately do NOT include the Docker images in the devcontainer
+# yet — those bump cadence is too noisy and the images are only used
+# by codespaces, not deployed.
+
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/bugfix_ai"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    labels:
+      - "deps"
+      - "python"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    labels:
+      - "deps"
+      - "ci"
+    commit-message:
+      prefix: "ci"
+      include: "scope"

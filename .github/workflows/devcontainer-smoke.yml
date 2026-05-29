@@ -1,0 +1,60 @@
+name: Devcontainer smoke build
+
+# Actually builds both `.devcontainer/devcontainer.json` (Phase 1) and
+# `.devcontainer/phase2/devcontainer.json` (Phase 2 compose stack) so a
+# broken postCreate or a typo in docker-compose.yml fails CI here,
+# BEFORE the first codespace user hits it.
+#
+# Why opt-in (path-filtered + manual):
+#   These builds pull multi-GB images — fine to run on devcontainer
+#   changes, wasteful on every push. The path filter keeps cost down.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".devcontainer/**"
+      - ".github/workflows/devcontainer-smoke.yml"
+  pull_request:
+    paths:
+      - ".devcontainer/**"
+
+concurrency:
+  group: devcontainer-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-phase1:
+    name: Build Phase 1 devcontainer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Phase 1 image
+        uses: devcontainers/ci@v0.3
+        with:
+          configFile: .devcontainer/devcontainer.json
+          # `runCmd` is what executes inside the freshly built container —
+          # a successful python import means postCreate left the env in
+          # a usable state.
+          runCmd: python -c "import sys; print('phase1 ok', sys.version)"
+          push: never
+
+  build-phase2:
+    name: Build Phase 2 devcontainer (compose stack)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Phase 2 image
+        uses: devcontainers/ci@v0.3
+        with:
+          configFile: .devcontainer/phase2/devcontainer.json
+          # Same smoke test — also confirms the compose siblings
+          # (postgres/qdrant/mlflow) reach a healthy state, since the
+          # devcontainer's depends_on gates the `app` service on them.
+          runCmd: python -c "import sys; print('phase2 ok', sys.version)"
+          push: never
